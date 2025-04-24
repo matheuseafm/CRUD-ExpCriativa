@@ -7,12 +7,13 @@ import {
   Heart,
   BookOpen,
   Bookmark,
-  HelpCircle,
+  Plus,
+  Search,
 } from 'lucide-react';
 
 function Footer() {
   return (
-    <footer className="bg-gray-50 border-t border-gray-100 mt-auto">
+    <footer className="bg-gray-50 border-t border-gray-100 mt-16">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
@@ -51,11 +52,20 @@ function Footer() {
               </li>
               <li>
                 <Link
+                  to="/search"
+                  className="text-sm text-gray-600 hover:text-primary-600 transition-colors flex items-center"
+                >
+                  <Search className="h-4 w-4 mr-2" />
+                  Pesquisar
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/add"
                   className="text-sm text-gray-600 hover:text-primary-600 transition-colors flex items-center"
                 >
-                  <HelpCircle className="h-4 w-4 mr-2" />
-                  Adicionar Novo
+                  <Plus className="h-4 w-4 mr-2" />
+                  Adicionar Livro
                 </Link>
               </li>
             </ul>

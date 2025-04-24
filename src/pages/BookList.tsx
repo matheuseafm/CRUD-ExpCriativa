@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Edit2, Trash2, Eye, Search, BookOpen, Filter } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
+import { translateToPortuguese } from '../utils/genreMap';
 
 interface Book {
   id: number;
@@ -19,6 +21,7 @@ function BookList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('');
   const [sortBy, setSortBy] = useState<'title' | 'author' | 'year'>('title');
+  const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
 
   useEffect(() => {
     fetchBooks();
@@ -35,13 +38,22 @@ function BookList() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm('Tem certeza que deseja excluir este livro?')) return;
+  const openDeleteModal = (book: Book) => {
+    setBookToDelete(book);
+  };
 
+  const closeDeleteModal = () => {
+    setBookToDelete(null);
+  };
+
+  const handleDelete = async () => {
+    if (!bookToDelete) return;
+    
     try {
-      await axios.delete(`http://localhost:3001/api/books/${id}`);
+      await axios.delete(`http://localhost:3001/api/books/${bookToDelete.id}`);
       toast.success('Livro excluído com sucesso');
       fetchBooks();
+      closeDeleteModal();
     } catch (error) {
       toast.error('Erro ao excluir o livro');
     }
@@ -79,7 +91,7 @@ function BookList() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-theme(spacing.32))] space-y-8">
+    <div className="min-h-[calc(100vh-theme(spacing.32))] space-y-8 mb-20">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <h1 className="text-4xl font-light text-gray-900">Sua coleção</h1>
         <div className="flex flex-col md:flex-row gap-4 md:items-center">
@@ -102,7 +114,7 @@ function BookList() {
               <option value="">Todos os Gêneros</option>
               {genres.map((genre) => (
                 <option key={genre} value={genre}>
-                  {genre}
+                  {translateToPortuguese(genre)}
                 </option>
               ))}
             </select>
@@ -138,7 +150,7 @@ function BookList() {
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <span className="px-3 py-1 text-xs font-light bg-primary-50 text-primary-700 rounded-full">
-                    {book.genre}
+                    {translateToPortuguese(book.genre)}
                   </span>
                   <span className="text-sm text-gray-500 font-light">
                     {book.publishYear}
@@ -169,7 +181,7 @@ function BookList() {
                     <Edit2 className="h-5 w-5" />
                   </Link>
                   <button
-                    onClick={() => handleDelete(book.id)}
+                    onClick={() => openDeleteModal(book)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
                     title="Excluir Livro"
                   >
@@ -181,6 +193,13 @@ function BookList() {
           ))}
         </div>
       )}
+
+      <DeleteConfirmationModal
+        isOpen={bookToDelete !== null}
+        onClose={closeDeleteModal}
+        onConfirm={handleDelete}
+        itemName={bookToDelete ? `o livro "${bookToDelete.title}"` : ''}
+      />
     </div>
   );
 }

@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Edit2, Trash2, Calendar, BookOpen, Hash, BookIcon } from 'lucide-react';
+import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
+import { translateToPortuguese } from '../utils/genreMap';
 
 interface Book {
   id: number;
@@ -18,6 +20,7 @@ function BookDetails() {
   const navigate = useNavigate();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     fetchBook();
@@ -29,19 +32,17 @@ function BookDetails() {
       setBook(response.data);
     } catch (error) {
       toast.error('Erro ao carregar os detalhes do livro');
-      navigate('/');
+      navigate('/books');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('Tem certeza que deseja excluir este livro?')) return;
-
     try {
       await axios.delete(`http://localhost:3001/api/books/${id}`);
       toast.success('Livro excluído com sucesso');
-      navigate('/');
+      navigate('/books');
     } catch (error) {
       toast.error('Erro ao excluir o livro');
     }
@@ -57,11 +58,14 @@ function BookDetails() {
 
   if (!book) return null;
 
+  // Traduzir o gênero do livro para exibição
+  const genreInPortuguese = translateToPortuguese(book.genre);
+
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto mb-20">
       <div className="flex items-center justify-between mb-6">
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/books')}
           className="flex items-center text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="h-5 w-5 mr-2" />
@@ -76,7 +80,7 @@ function BookDetails() {
             Editar
           </Link>
           <button
-            onClick={handleDelete}
+            onClick={() => setIsDeleteModalOpen(true)}
             className="flex items-center px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100 transition-colors"
           >
             <Trash2 className="h-4 w-4 mr-2" />
@@ -90,7 +94,7 @@ function BookDetails() {
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-3xl font-bold text-gray-900">{book.title}</h1>
             <span className="px-4 py-2 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium">
-              {book.genre}
+              {genreInPortuguese}
             </span>
           </div>
 
@@ -124,7 +128,7 @@ function BookDetails() {
                 <BookIcon className="h-5 w-5 mr-3 text-gray-400" />
                 <div>
                   <h2 className="text-sm font-medium text-gray-500">Gênero</h2>
-                  <p className="mt-1 text-lg">{book.genre}</p>
+                  <p className="mt-1 text-lg">{genreInPortuguese}</p>
                 </div>
               </div>
             </div>
@@ -149,6 +153,13 @@ function BookDetails() {
           </div>
         </div>
       </div>
+
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        itemName={`o livro "${book.title}"`}
+      />
     </div>
   );
 }
