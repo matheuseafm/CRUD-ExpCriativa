@@ -74,7 +74,7 @@ Isso iniciará tanto o servidor frontend quanto o backend simultaneamente.
 ## Estrutura do Projeto
 
 ```
-├── backend/           # Servidor Express e rotas da API
+├── backend/          # Servidor Express e rotas da API
 ├── src/              # Aplicação React frontend
 │   ├── components/   # Componentes reutilizáveis
 │   ├── pages/        # Componentes de páginas
