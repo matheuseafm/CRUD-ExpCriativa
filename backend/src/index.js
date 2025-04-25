@@ -11,13 +11,10 @@ const PORT = Number(process.env.PORT) || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Health check
 app.get('/', (req, res) => res.send('Book Management API'));
 
-// Rotas de livros
 app.use('/api/books', router);
 
-// Inicia servidor após conexão bem-sucedida
 pool.getConnection()
   .then(conn => {
     conn.release();

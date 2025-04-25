@@ -12,7 +12,6 @@ const BookSchema = z.object({
   genre:        z.string().min(1, 'Genre is required'),
 });
 
-// GET /api/books
 router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -35,7 +34,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/books/:id
 router.get('/:id', async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -60,7 +58,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/books
 router.post('/', async (req, res) => {
   try {
     const book = BookSchema.parse(req.body);
@@ -79,7 +76,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /api/books/:id
 router.put('/:id', async (req, res) => {
   try {
     const book = BookSchema.parse(req.body);
@@ -104,7 +100,6 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/books/:id
 router.delete('/:id', async (req, res) => {
   try {
     const [result] = await pool.execute(

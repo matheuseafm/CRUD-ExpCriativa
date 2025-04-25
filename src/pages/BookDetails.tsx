@@ -58,7 +58,6 @@ function BookDetails() {
 
   if (!book) return null;
 
-  // Traduzir o gênero do livro para exibição
   const genreInPortuguese = translateToPortuguese(book.genre);
 
   return (
