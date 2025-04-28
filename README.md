@@ -61,8 +61,15 @@ Este projeto é uma aplicação CRUD (Create, Read, Update, Delete) full-stack q
    ```
 
 3. Configure as variáveis de ambiente:
-   - Crie um arquivo `.env` na raiz do projeto
-   - Configure suas credenciais do banco de dados MySQL
+   - Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+     ```
+     DB_HOST=localhost
+     DB_USER=seu_usuario
+     DB_PASSWORD=sua_senha
+     DB_NAME=nome_do_banco
+     PORT=3000
+     ```
+   - Substitua os valores acima com suas credenciais do banco de dados MySQL
 
 4. Inicie o servidor de desenvolvimento:
    ```bash
